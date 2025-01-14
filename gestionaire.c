@@ -22,7 +22,50 @@ void sauvegarderInventaire(Produit *inventaire, int nombreDarticles) {
     fclose(fichier);
     printf("Inventaire sauvegardé avec succès !\n");
 }
-void chercherProduit /*(shalom)*/(Produit *inventaire, int nombreDarticles) {
+void chargerInventaire /(jeff)/ (Produit **inventaire, int *nombreDarticles) {
+    FILE *fichier = fopen("inventaire.bin", "rb");
+    if (fichier == NULL) {
+        printf("Aucun fichier d'inventaire trouvé. Initialisation de l'inventaire vide.\n");
+        *nombreDarticles = 0;
+        return;
+    }
+    fread(nombreDarticles, sizeof(int), 1, fichier);
+    *inventaire = (Produit *)malloc(*nombreDarticles * sizeof(Produit));
+    if (*inventaire == NULL) {
+        perror("Erreur d'allocation de mémoire");
+        fclose(fichier);
+        exit(EXIT_FAILURE);
+    }
+    fread(*inventaire, sizeof(Produit), *nombreDarticles, fichier);
+    fclose(fichier);
+    printf("Inventaire chargé avec succès !\n");
+}
+void ajouterProduit(Produit **inventaire, int *nombreDarticles) {
+    if (*nombreDarticles >= MAX_PRODUITS) {
+        printf("L'inventaire est plein, veuillez supprimer certains produits.\n");
+        return;
+    }
+    Produit nouveauProduit;
+    printf("Nom du produit : ");
+    fgets(nouveauProduit.nom, sizeof(nouveauProduit.nom), stdin);
+     nouveauProduit.nom[strcspn(nouveauProduit.nom, "\n")] = 0;//Suprime le passage à la ligne crée par fgets
+    printf("Catégorie : ");
+    scanf("%s", nouveauProduit.categorie);
+    printf("Quantité : ");
+    scanf("%d", &nouveauProduit.quantite);
+    printf("Prix : ");
+    scanf("%f", &nouveauProduit.prix);
+    *inventaire = (Produit *)realloc(*inventaire, (*nombreDarticles + 1) * sizeof(Produit));
+    if (*inventaire == NULL) {
+        printf("Erreur d'allocation de mémoire");
+        exit(EXIT_FAILURE);
+    }
+    (*inventaire)[*nombreDarticles] = nouveauProduit;
+    (*nombreDarticles)++;
+    printf("Produit ajouté avec succès !\n");
+}
+
+void chercherProduit (Produit *inventaire, int nombreDarticles) {
     printf("nombre d'article %d\n", nombreDarticles);
     if (nombreDarticles == 0) {
         printf("L'inventaire est vide.\n");
@@ -114,22 +157,4 @@ int main() {
 
     free(inventaire);
     return 0;
-}
-void chargerInventaire /(jeff)/ (Produit **inventaire, int *nombreDarticles) {
-    FILE *fichier = fopen("inventaire.bin", "rb");
-    if (fichier == NULL) {
-        printf("Aucun fichier d'inventaire trouvé. Initialisation de l'inventaire vide.\n");
-        *nombreDarticles = 0;
-        return;
-    }
-    fread(nombreDarticles, sizeof(int), 1, fichier);
-    *inventaire = (Produit *)malloc(*nombreDarticles * sizeof(Produit));
-    if (*inventaire == NULL) {
-        perror("Erreur d'allocation de mémoire");
-        fclose(fichier);
-        exit(EXIT_FAILURE);
-    }
-    fread(*inventaire, sizeof(Produit), *nombreDarticles, fichier);
-    fclose(fichier);
-    printf("Inventaire chargé avec succès !\n");
 }
