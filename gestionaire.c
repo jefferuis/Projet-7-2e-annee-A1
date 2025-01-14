@@ -1,3 +1,27 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_NOM 50
+#define MAX_PRODUITS 100
+
+typedef struct {
+    char nom[MAX_NOM];
+    char categorie[MAX_NOM];
+    int quantite;
+    float prix;
+} Produit;
+void sauvegarderInventaire(Produit *inventaire, int nombreDarticles) {
+    FILE *fichier = fopen("inventaire.bin", "wb");
+    if (fichier == NULL) {
+        printf("Erreur lors de l'ouverture du fichier pour la sauvegarde");
+        exit(EXIT_FAILURE);
+    }
+    fwrite(&nombreDarticles, sizeof(int), 1, fichier);
+    fwrite(inventaire, sizeof(Produit), nombreDarticles, fichier);
+    fclose(fichier);
+    printf("Inventaire sauvegardé avec succès !\n");
+}
 void chercherProduit /*(shalom)*/(Produit *inventaire, int nombreDarticles) {
     printf("nombre d'article %d\n", nombreDarticles);
     if (nombreDarticles == 0) {
@@ -46,4 +70,48 @@ void chercherProduit /*(shalom)*/(Produit *inventaire, int nombreDarticles) {
             printf("Choix invalide.\n");
             break;
     }
+}
+int main() {
+    Produit *inventaire = NULL;
+    int nombreDarticles = 0;
+
+    chargerInventaire(&inventaire, &nombreDarticles);
+    printf("nombreDarticles après chargement : %d\n", nombreDarticles); // Affichage pour vérifier la valeur de nombreDarticles
+
+    int choix;
+    do {
+        printf("\nMenu :\n");
+        printf("1. Afficher l'inventaire\n");
+        printf("2. Ajouter un produit\n");
+        printf("3. Supprimer un produit\n");
+        printf("4. Chercher un produit\n");
+        printf("5. Sauvegarder et quitter\n");
+        printf("Votre choix : ");
+        scanf("%d", &choix);
+        getchar(); // Consomme le saut de ligne laissé par scanf
+
+        switch (choix) {
+            case 1:
+                afficherInventaire(inventaire, nombreDarticles);
+                break;
+            case 2:
+                ajouterProduit(&inventaire, &nombreDarticles);
+                break;
+            case 3:
+                suppression(&inventaire, &nombreDarticles);
+                break;
+            case 4:
+                chercherProduit(inventaire, nombreDarticles);
+                break;
+            case 5:
+                sauvegarderInventaire(inventaire, nombreDarticles);
+                printf("Au revoir !\n");
+                break;
+            default:
+                printf("Choix invalide. Veuillez réessayer.\n");
+        }
+    } while (choix != 5);
+
+    free(inventaire);
+    return 0;
 }
