@@ -139,6 +139,16 @@ void chercherProduit (Produit *inventaire, int nombreDarticles) {
             printf("Choix invalide.\n");
             break;
     }
+    void afficherInventaire(Produit *inventaire, int nombreDarticles) {
+    if (nombreDarticles == 0) {
+        printf("L'inventaire est vide.\n");
+        return;
+    }
+    printf("\nInventaire :\n");
+    for (int i = 0; i < nombreDarticles; i++) {
+        printf("Produit %d : %s, catégorie : %s, Quantité : %d, Prix : %.2f\n", i + 1, inventaire[i].nom, inventaire[i].categorie, inventaire[i].quantite, inventaire[i].prix);
+    }
+    }
 }
 int main() {
     Produit *inventaire = NULL;
