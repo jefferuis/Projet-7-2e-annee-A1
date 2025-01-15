@@ -64,7 +64,33 @@ void ajouterProduit(Produit **inventaire, int *nombreDarticles) {
     (*nombreDarticles)++;
     printf("Produit ajouté avec succès !\n");
 }
-
+void suppression/(Prime)/(Produit **inventaire, int *nombreDarticles) {
+    if (*nombreDarticles == 0) {
+        printf("Inventaire vide. Il n'y a rien à supprimer.\n");
+        return;
+    }
+    printf("Quel article voulez-vous supprimer ? (Entrez le nom du produit) :\n");
+    char articleASupprimer[MAX_NOM];
+    fgets(articleASupprimer, sizeof(articleASupprimer), stdin);
+    // Suprime le passage à la ligne crée par fgets
+    articleASupprimer[strcspn(articleASupprimer, "\n")] = 0;
+    int produitTrouve = 0;
+    for (int i = 0; i < *nombreDarticles; i++) {
+        if (strcmp((*inventaire)[i].nom, articleASupprimer) == 0) {
+            produitTrouve = 1;
+            for (int j = i; j < *nombreDarticles - 1; j++) {
+                (*inventaire)[j] = (*inventaire)[j + 1];
+            }
+            (*nombreDarticles)--;
+            *inventaire = (Produit *)realloc(*inventaire, (*nombreDarticles) * sizeof(Produit));
+            printf("Produit supprimé avec succès !\n");
+            break;
+        }
+    }
+    if (!produitTrouve) {
+        printf("Produit non trouvé dans l'inventaire.\n");
+    }
+}
 void chercherProduit (Produit *inventaire, int nombreDarticles) {
     printf("nombre d'article %d\n", nombreDarticles);
     if (nombreDarticles == 0) {
