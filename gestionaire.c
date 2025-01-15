@@ -36,6 +36,7 @@ void chargerInventaire  (Produit **inventaire, int *nombreDarticles) {
         fclose(fichier);
         exit(EXIT_FAILURE);
     }
+    free(*inventaire)
     fread(*inventaire, sizeof(Produit), *nombreDarticles, fichier);
     fclose(fichier);
     printf("Inventaire chargé avec succès !\n");
