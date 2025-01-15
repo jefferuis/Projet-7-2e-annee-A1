@@ -14,15 +14,15 @@ typedef struct {
 void sauvegarderInventaire(Produit *inventaire, int nombreDarticles) {
     FILE *fichier = fopen("inventaire.bin", "wb");
     if (fichier == NULL) {
-        printf("Erreur lors de l'ouverture du fichier pour sauvegarde");
-        exit(EXIT_FAILURE);
+        printf("Erreur lors de l'ouverture du fichier pour la sauvegarde");
+        exit(EXIT_FAILURE);//Arrete le code 
     }
     fwrite(&nombreDarticles, sizeof(int), 1, fichier);
     fwrite(inventaire, sizeof(Produit), nombreDarticles, fichier);
     fclose(fichier);
     printf("Inventaire sauvegardé avec succès !\n");
 }
-void chargerInventaire(Produit **inventaire, int *nombreDarticles) {
+void chargerInventaire  (Produit **inventaire, int *nombreDarticles) {
     FILE *fichier = fopen("inventaire.bin", "rb");
     if (fichier == NULL) {
         printf("Aucun fichier d'inventaire trouvé. Initialisation de l'inventaire vide.\n");
@@ -50,7 +50,7 @@ void afficherInventaire(Produit *inventaire, int nombreDarticles) {
         printf("Produit %d : %s, catégorie : %s, Quantité : %d, Prix : %.2f\n", i + 1, inventaire[i].nom, inventaire[i].categorie, inventaire[i].quantite, inventaire[i].prix);
     }
 }
-void ajouterProduit(Produit **inventaire, int *nombreDarticles) {
+void ajouterProduit (Produit **inventaire, int *nombreDarticles) {
     if (*nombreDarticles >= MAX_PRODUITS) {
         printf("L'inventaire est plein, veuillez supprimer certains produits.\n");
         return;
@@ -58,9 +58,10 @@ void ajouterProduit(Produit **inventaire, int *nombreDarticles) {
     Produit nouveauProduit;
     printf("Nom du produit : ");
     fgets(nouveauProduit.nom, sizeof(nouveauProduit.nom), stdin);
-     nouveauProduit.nom[strcspn(nouveauProduit.nom, "\n")] = 0;//Suprime le passage à la ligne crée par fgets
+    nouveauProduit.nom[strcspn(nouveauProduit.nom, "\n")] = 0;//Suprime le passage à la ligne crée par fgets
     printf("Catégorie : ");
-    scanf("%s", nouveauProduit.categorie);
+    fgets(nouveauProduit.categorie, sizeof(nouveauProduit.categorie), stdin);
+    nouveauProduit.categorie[strcspn(nouveauProduit.categorie,"\n")] = 0;
     printf("Quantité : ");
     scanf("%d", &nouveauProduit.quantite);
     printf("Prix : ");
@@ -74,6 +75,35 @@ void ajouterProduit(Produit **inventaire, int *nombreDarticles) {
     (*nombreDarticles)++;
     printf("Produit ajouté avec succès !\n");
 }
+void suppression (Produit **inventaire, int *nombreDarticles) {    
+    if (*nombreDarticles == 0) {
+        printf("Inventaire vide. Il n'y a rien à supprimer.\n");
+        return;
+    }
+    printf("Quel article voulez-vous supprimer ? (Entrez le nom du produit) :\n");
+    char articleASupprimer[MAX_NOM];
+    fgets(articleASupprimer, sizeof(articleASupprimer), stdin);
+    articleASupprimer[strcspn(articleASupprimer, "\n")] = 0;// Suprime le passage à la ligne crée par fgets
+    int produitTrouve = 0;
+    for (int i = 0; i < *nombreDarticles; i++) {
+        if (strcmp((*inventaire)[i].nom, articleASupprimer) == 0) {
+            produitTrouve = 1;
+            for (int j = i; j < *nombreDarticles - 1; j++) {
+                (*inventaire)[j] = (*inventaire)[j + 1];
+            }
+            (*nombreDarticles)--;
+            if (*nombreDarticles == 0) {
+              free(*inventaire);
+                *inventaire = NULL;
+                 }else{*inventaire = (Produit *)realloc(*inventaire, (*nombreDarticles) * sizeof(Produit));}
+            printf("Produit supprimé avec succès !\n");
+            break;
+        }
+    }
+    if (produitTrouve == 0) {
+        printf("Produit non trouvé dans l'inventaire.\n");
+    }
+}
 void modifierproduit(Produit**inventaire,int *nombreDarticles){
     int choix,indicateur = 0 ;
     float nouveauprix;
@@ -81,11 +111,14 @@ void modifierproduit(Produit**inventaire,int *nombreDarticles){
     printf("Quel produit voulez vous modifier? \n");
     fgets(ProduitAmodifier,sizeof(ProduitAmodifier),stdin);
     ProduitAmodifier[strcspn(ProduitAmodifier,"\n")]=0;
-    for (int i=0;i<nombreDarticles;i++){
-        if(strcmp((*inventaire)[i].nom,ProduitAmodifier) == 0){
-            printf("Que voulez vous modifier ? ");
+    for (int i=0;i< *nombreDarticles;i++){
+        if(strcmp((*inventaire[i]).nom,ProduitAmodifier) == 0){
+            printf("Que voulez vous modifier ?\n");
             printf("1-categorie\n");
             printf("2-prix\n");
+            printf("Votre choix:");
+            scanf("%d",&choix);
+            getchar();
             switch (choix )
             {
             case 1:
@@ -109,56 +142,29 @@ void modifierproduit(Produit**inventaire,int *nombreDarticles){
     }
     if (indicateur==*nombreDarticles){printf("le produit que vous souhaitez modifier n'est pas dans l'inventaire.");}
 }
-void suppression(Produit **inventaire, int *nombreDarticles) {
-    if (*nombreDarticles == 0) {
-        printf("Inventaire vide. Il n'y a rien à supprimer.\n");
-        return;
-    }
-    printf("Quel article voulez-vous supprimer ? (Entrez le nom du produit) :\n");
-    char articleASupprimer[MAX_NOM];
-    fgets(articleASupprimer, sizeof(articleASupprimer), stdin);
-    // Suprime le passage à la ligne crée par fgets
-    articleASupprimer[strcspn(articleASupprimer, "\n")] = 0;
-
-    int produitTrouve = 0;
-    for (int i = 0; i < *nombreDarticles; i++) {
-        if (strcmp((*inventaire)[i].nom, articleASupprimer) == 0) {
-            produitTrouve = 1;
-            for (int j = i; j < *nombreDarticles - 1; j++) {
-                (*inventaire)[j] = (*inventaire)[j + 1];
-            }
-            (*nombreDarticles)--;
-            *inventaire = (Produit *)realloc(*inventaire, (*nombreDarticles) * sizeof(Produit));
-            printf("Produit supprimé avec succès !\n");
-            break;
-        }
-    }
-    if (!produitTrouve) {
-        printf("Produit non trouvé dans l'inventaire.\n");
-    }
-}
-void chercherProduit(Produit *inventaire, int nombreDarticles) {
+void chercherProduit (Produit *inventaire, int nombreDarticles) {
     printf("nombre d'article %d\n", nombreDarticles);
     if (nombreDarticles == 0) {
         printf("L'inventaire est vide.\n");
         return;
     }
     char recherche[MAX_NOM];
-    int choixrecherche,j;
+    int choixrecherche=0,j=0;
     printf("Voulez-vous chercher un produit ?\n");
     printf("1. Par nom\n");
     printf("2. Par catégorie\n");
     printf("Entrez votre choix : ");
     scanf("%d", &choixrecherche);
-
+    getchar();
     switch (choixrecherche) {
         case 1:
             printf("Entrez le nom du produit recherché : ");
-            scanf("%s", recherche);
+            fgets (recherche, sizeof(recherche), stdin);
+            recherche[strcspn(recherche, "\n")]= '\0';
             int produitTrouve = 0;
             for (int i = 0; i < nombreDarticles; i++) {
                 if (strcmp(inventaire[i].nom, recherche) == 0) {
-                    printf("Produit trouvé : %s,categorie : %s, Quantité : %d, Prix : %.2f\n", inventaire[i].nom, inventaire[i].categorie, inventaire[i].quantite, inventaire[i].prix);
+                    printf("Voici les imformations concernant ce produit :\ncategorie : %s, Quantité : %d, Prix : %.2f\n", inventaire[i].categorie, inventaire[i].quantite, inventaire[i].prix);
                         produitTrouve = 1;
                     break;
                 }
@@ -169,16 +175,16 @@ void chercherProduit(Produit *inventaire, int nombreDarticles) {
             break;
         case 2:
             printf("Entrez la catégorie du produit recherché : ");
-            scanf("%s", recherche);
+            fgets (recherche,sizeof(recherche),stdin);
+            recherche[strcspn(recherche,"\n")]=0;
             produitTrouve = 0;
             for (int i = 0; i < nombreDarticles; i++) {
                 if (strcmp(inventaire[i].categorie, recherche) == 0) {
-                    printf("Produit trouvé : %s, Quantité : %d, Prix : %.2f\n",
-                           inventaire[i].nom, inventaire[i].quantite, inventaire[i].prix);
+                    printf("Produit trouvé : %s, Quantité : %d, Prix : %.2f\n",  inventaire[i].nom, inventaire[i].quantite, inventaire[i].prix);
                     produitTrouve = 1;
-                }else {produitTrouve=2;j=j++;}
+                }else {produitTrouve=2;j=j+1;}
             }
-            if (j == nombreDarticles-1) {
+            if (j == nombreDarticles) {
                 printf("Cette catégorie n'existe pas ou est vide.\n");
             }
             break;
@@ -192,7 +198,7 @@ int main() {
     int nombreDarticles = 0;
 
     chargerInventaire(&inventaire, &nombreDarticles);
-    printf("nombreDarticles après chargement : %d\n", nombreDarticles); // Affichage pour vérifier la valeur de nombreDarticles
+    printf("nombreDarticles après chargement : %d\n\n", nombreDarticles); // Affichage pour vérifier la valeur de nombreDarticles
 
     int choix;
     do {
@@ -209,29 +215,28 @@ int main() {
 
         switch (choix) {
             case 1:
-                 afficherInventaire(inventaire, nombreDarticles);
-                 break;
+                afficherInventaire(inventaire, nombreDarticles);
+                break;
             case 2:
-                 ajouterProduit(&inventaire, &nombreDarticles);
-                 break;
+                ajouterProduit(&inventaire, &nombreDarticles);
+                break;
             case 3:
-                 suppression(&inventaire, &nombreDarticles);
-                 break;
+                suppression(&inventaire, &nombreDarticles);
+                break;
             case 4:
-                 chercherProduit(inventaire, nombreDarticles);
-                 break;
-            case 5: 
-                 modifierproduit(&inventaire,&nombreDarticles);
-                 break;
+                chercherProduit(inventaire, nombreDarticles);
+                break;
+            case 5:
+                modifierproduit(&inventaire,&nombreDarticles);
+                break;
             case 6:
-                 sauvegarderInventaire(inventaire, nombreDarticles);
-                 printf("Au revoir !\n");
-                 break;
+                sauvegarderInventaire(inventaire, nombreDarticles);
+                printf("Au revoir !\n");
+                break;
             default:
-                 printf("Choix invalide. Veuillez réessayer.\n");
+                printf("Choix invalide. Veuillez réessayer.\n");
         }
     } while (choix != 6);
-
     free(inventaire);
     return 0;
 }
