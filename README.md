@@ -30,7 +30,7 @@ Structures, tableaux dynamiques (gestion dynamique de la mémoire avec malloc() 
 
 # Exemple d'utilisation: 
 
-○ Ajoutez un produit avec :
+1- Ajoutez un produit avec :
 
 Nom : "Pommes"
 
@@ -41,16 +41,15 @@ Quantité : 50
 Prix : 2.5
 
 
-○ Consultez l'inventaire pour voir la liste mise à jour.
+2- Consultez l'inventaire pour voir la liste mise à jour.
 
 
-○ Supprimez un produit en indiquant son nom.
+3- Supprimez un produit en indiquant son nom.
 
 
-○ Recherchez un produit en tapant son nom ou sa catégorie.
+4- Recherchez un produit en tapant son nom ou sa catégorie.
 
 
-
-Contributions
+# Contributions :
 
 Les contributions sont les bienvenues ! Si vous avez des idées pour améliorer le programme, n'hésitez pas à soumettre une pull request ou ouvrir une issue sur GitHub.
