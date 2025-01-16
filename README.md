@@ -6,22 +6,22 @@ Créer un système de gestion d'inventaire pour un magasin. Chaque produit est r
 
 # Fonctionnalités :
 
-○ Afficher l'inventaire
+○ Afficher l'inventaire: 
 Consultez tous les produits actuellement dans l'inventaire avec leurs informations détaillées.
 
-○  Ajouter un produit
+○  Ajouter un produit: 
 Ajoutez de nouveaux produits en fournissant leur nom, catégorie, quantité, et prix.
 
-○ Supprimer un produit
+○ Supprimer un produit: 
 Supprimez un produit en indiquant son nom.
 
-○  Modifier un produit
+○  Modifier un produit: 
 Mettez à jour la quantité, le prix ou la catégorie d'un produit existant.
 
-○ Rechercher un produit
+○ Rechercher un produit: 
 Recherchez un produit par son nom ou sa catégorie.
 
-○ Sauvegarder et charger l'inventaire
+○ Sauvegarder et charger l'inventaire: 
 Sauvegardez automatiquement l'inventaire dans un fichier binaire afin de conserver les données entre les sessions.
 
 # Concepts utilisés :
