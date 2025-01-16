@@ -11,6 +11,7 @@ typedef struct {
     int quantite;
     float prix;
 } Produit;
+//Fonction pour la sauvegarde de l'inventaire dans un fichier binaire 
 void sauvegarderInventaire(Produit *inventaire, int nombreDarticles) {
     FILE *fichier = fopen("inventaire.bin", "wb");
     if (fichier == NULL) {
@@ -22,6 +23,7 @@ void sauvegarderInventaire(Produit *inventaire, int nombreDarticles) {
     fclose(fichier);
     printf("Inventaire sauvegarde avec succès !\n");
 }
+//Fonction pour charger l'inventaire depuis un fichier binanire si il existe et a été préalablement sauvegarder 
 void chargerInventaire  (Produit **inventaire, int *nombreDarticles) {
     FILE *fichier = fopen("inventaire.bin", "rb");
     if (fichier == NULL) {
@@ -40,6 +42,7 @@ void chargerInventaire  (Produit **inventaire, int *nombreDarticles) {
     fclose(fichier);
     printf("Inventaire charge avec succès !\n");
 }
+//Affichange dans le terminanl des produits contenu dans l'inventaire 
 void afficherInventaire(Produit *inventaire, int nombreDarticles) {
     if (nombreDarticles == 0) {
         printf("L'inventaire est vide.\n");
@@ -50,6 +53,7 @@ void afficherInventaire(Produit *inventaire, int nombreDarticles) {
         printf("Produit %d : %s, catégorie : %s, Quantite : %d, Prix : %.2f\n", i + 1, inventaire[i].nom, inventaire[i].categorie, inventaire[i].quantite, inventaire[i].prix);
     }
 }
+//Fonction pour ajouter des produits dans l'inventaire 
 void ajouterProduit (Produit **inventaire, int *nombreDarticles) {
     if (*nombreDarticles >= MAX_PRODUITS) {
         printf("L'inventaire est plein, veuillez supprimer certains produits.\n");
@@ -75,6 +79,7 @@ void ajouterProduit (Produit **inventaire, int *nombreDarticles) {
     (*nombreDarticles)++;
     printf("Produit ajoute avec succès !\n");
 }
+//Fonction pour la suppression d'un produit dans l'inventaire 
 void suppression (Produit **inventaire, int *nombreDarticles) {    
     if (*nombreDarticles == 0) {
         printf("Inventaire vide. Il n'y a rien à supprimer.\n");
@@ -104,6 +109,7 @@ void suppression (Produit **inventaire, int *nombreDarticles) {
         printf("Produit non trouve dans l'inventaire.\n");
     }
 }
+//Fonction pour la modification des quantités et des prix des produits
 void modifierproduit(Produit**inventaire,int *nombreDarticles){
     int choix,indicateur = 0 ;
     float nouveauprix;
@@ -142,6 +148,7 @@ void modifierproduit(Produit**inventaire,int *nombreDarticles){
     }
     if (indicateur==*nombreDarticles){printf("le produit que vous souhaitez modifier n'est pas dans l'inventaire.");}
 }
+//Fonction pour la rechervhe d'information sur les produits présents dans l'inventaire 
 void chercherProduit (Produit *inventaire, int nombreDarticles) {
     printf("nombre d'article %d\n", nombreDarticles);
     if (nombreDarticles == 0) {
