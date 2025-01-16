@@ -36,7 +36,6 @@ void chargerInventaire  (Produit **inventaire, int *nombreDarticles) {
         fclose(fichier);
         exit(EXIT_FAILURE);
     }
-    free(*inventaire);
     fread(*inventaire, sizeof(Produit), *nombreDarticles, fichier);
     fclose(fichier);
     printf("Inventaire charge avec succès !\n");
@@ -75,7 +74,6 @@ void ajouterProduit (Produit **inventaire, int *nombreDarticles) {
     (*inventaire)[*nombreDarticles] = nouveauProduit;
     (*nombreDarticles)++;
     printf("Produit ajoute avec succès !\n");
-    free(inventaire);
 }
 void suppression (Produit **inventaire, int *nombreDarticles) {    
     if (*nombreDarticles == 0) {
