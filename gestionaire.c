@@ -113,7 +113,8 @@ void suppression (Produit **inventaire, int *nombreDarticles) {
 void modifierproduit(Produit**inventaire,int *nombreDarticles){
     int choix,indicateur = 0 ;
     float nouveauprix;
-    char ProduitAmodifier[MAX_NOM],nouvellequantite[MAX_NOM];
+    int nouvellequantite;
+    char ProduitAmodifier[MAX_NOM];
     printf("Quel produit voulez vous modifier? \n");
     fgets(ProduitAmodifier,sizeof(ProduitAmodifier),stdin);
     ProduitAmodifier[strcspn(ProduitAmodifier,"\n")]=0;
@@ -128,10 +129,9 @@ void modifierproduit(Produit**inventaire,int *nombreDarticles){
             switch (choix )
             {
             case 1:
-                printf ("entrez la nouvelle categorie");
-                fgets(nouvellequantite,sizeof(nouvellequantite),stdin);
-                nouvellequantite[strcspn(nouvellequantite, "\n")]=0;
-                strcpy((*inventaire)[i].categorie , nouvellequantite);
+                printf ("entrez la nouvelle quantite\n");
+                scanf("%d",&nouvellequantite);
+                (*inventaire)[i].quantite=nouvellequantite;
                 printf("Modification reussie");
                 break;
             case 2:
